@@ -7,3 +7,8 @@ pub use super::pjt_support_tool_mst::Entity as PjtSupportToolMst;
 pub use super::qualification::Entity as Qualification;
 pub use super::self_introduction::Entity as SelfIntroduction;
 pub use super::work_experience::Entity as WorkExperience;
+
+
+//外部リポジトリsea-orm-postgresql-demoのentities
+pub use super::todos::Entity as Todos;
+pub use super::users::Entity as Users;
