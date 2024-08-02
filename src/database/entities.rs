@@ -1,5 +1,7 @@
 pub mod prelude;
 
+pub mod employees;
+pub mod departments;
 pub mod todos;
 pub mod users;
 

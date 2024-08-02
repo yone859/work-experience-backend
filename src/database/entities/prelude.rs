@@ -12,3 +12,5 @@ pub use super::work_experience::Entity as WorkExperience;
 //外部リポジトリsea-orm-postgresql-demoのentities
 pub use super::todos::Entity as Todos;
 pub use super::users::Entity as Users;
+pub use super::employees::Entity as Employees;
+pub use super::departments::Entity as departments;
