@@ -11,6 +11,7 @@ async fn main() {
 
     let select_res:Option<employees::Model> = select_employees(&db).await.expect("database select error!");
     let update_res:Option<employees::Model> = update_employees(&db, &select_res).await.expect("database update error!");
+    let insert_res:Option<employees::Model> = update_employees(&db, &select_res).await.expect("database update error!");
 
     println!("{}", select_res.unwrap().id);
 
@@ -34,4 +35,17 @@ pub async fn update_employees(db: &DbConn, employees: &Option<employees::Model>)
 
     let active_user: employees::Model = active_user.update(db).await?;
     Ok(Some(active_user))
+}
+
+pub async fn insert_user(db: &DbConn) -> Result<users::Model, DbErr> {
+    // ユーザーアクティブモデルを生成
+    let user = users::ActiveModel {
+        id: ActiveValue::NotSet, // auto_increment() なのでセットしない
+        name: Set("John Smith".to_string())
+    };
+
+    // insert
+    let user: users::Model = user.insert(db).await?;
+
+    Ok(user)
 }
