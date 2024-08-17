@@ -1,5 +1,5 @@
 mod database;
-use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbConn, DbErr, EntityTrait, Set};
+use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbConn, DbErr, EntityTrait, Set, ActiveValue};
 
 use crate::database::db_connection::establish_connection;
 use crate::database::entities::*;
@@ -11,7 +11,7 @@ async fn main() {
 
     let select_res:Option<employees::Model> = select_employees(&db).await.expect("database select error!");
     let update_res:Option<employees::Model> = update_employees(&db, &select_res).await.expect("database update error!");
-    let insert_res:Option<employees::Model> = update_employees(&db, &select_res).await.expect("database update error!");
+    let insert_res:Option<employees::Model> = insert_employees(&db).await.expect("database update error!");
 
     println!("{}", select_res.unwrap().id);
 
@@ -20,32 +20,62 @@ async fn main() {
     } else {
         println!("Name is None");
     }
+
+    if let Some(name ) = &insert_res.unwrap().name {
+        println!("{}", name);
+    } else {
+        println!("Name is None");
+    }
 }
 
 pub async fn select_employees(db: &DbConn) -> Result<Option<employees::Model>, DbErr> {
     let selected: Option<employees::Model> = Employees::find_by_id(1).one(db).await?;
+    
+// `as_ref()`を使って`Option`内の値を借用する
+if let Some(employee) = selected.as_ref() {
+    println!("{}", employee.id);
+} else {
+    println!("Name is None");
+}
+
     Ok(selected)
 }
 
 pub async fn update_employees(db: &DbConn, employees: &Option<employees::Model>) -> Result<Option<employees::Model>, DbErr> {
     
-    let mut active_user: employees::ActiveModel = employees.clone().unwrap().into(); 
+    let mut active_employees: employees::ActiveModel = employees.clone().unwrap().into(); 
     
-    active_user.name = Set(Some("佐藤".to_string()));
+    active_employees.name = Set(Some("tanaka".to_string()));
 
-    let active_user: employees::Model = active_user.update(db).await?;
-    Ok(Some(active_user))
+    let active_employees: employees::Model = active_employees.update(db).await?;
+
+    if let Some(name) = &Some(&active_employees.clone()).unwrap().name {
+        println!("{}", name);
+    } else {
+        println!("Name is None");
+    }
+
+
+    Ok(Some(active_employees))
 }
 
-pub async fn insert_user(db: &DbConn) -> Result<users::Model, DbErr> {
+pub async fn insert_employees(db: &DbConn) -> Result<Option<employees::Model>, DbErr> {
     // ユーザーアクティブモデルを生成
-    let user = users::ActiveModel {
+    let user = employees::ActiveModel {
         id: ActiveValue::NotSet, // auto_increment() なのでセットしない
-        name: Set("John Smith".to_string())
+        name: Set(Some("鈴木".to_string())),
+        ..Default::default()
+        // department_id: Set(Some(1)),
     };
 
     // insert
-    let user: users::Model = user.insert(db).await?;
+    let user: employees::Model = user.insert(db).await?;
 
-    Ok(user)
+    if let Some(name) = &Some(&user.clone()).unwrap().name {
+        println!("{}", name);
+    } else {
+        println!("Name is None");
+    }
+
+    Ok(Some(user))
 }
