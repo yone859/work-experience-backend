@@ -1,17 +1,27 @@
 mod database;
+mod router;
+
+
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbConn, DbErr, EntityTrait, Set, ActiveValue};
 
 use crate::database::db_connection::establish_connection;
+
+use crate::router::routing::routing;
 use crate::database::entities::*;
 use crate::database::entities::prelude::Employees;
 
+
 #[tokio::main]
 async fn main() {
+
+    //サーバー起動、ルーター登録
+    let _ =  routing();
+
     let db:DatabaseConnection  = establish_connection().await.expect("connection error!");
 
     let select_res:Option<employees::Model> = select_employees(&db).await.expect("database select error!");
     let update_res:Option<employees::Model> = update_employees(&db, &select_res).await.expect("database update error!");
-    let insert_res:Option<employees::Model> = insert_employees(&db).await.expect("database update error!");
+    let insert_res:Option<employees::Model> = insert_employees(&db).await.expect("database insert error!");
 
     println!("{}", select_res.unwrap().id);
 
@@ -54,7 +64,6 @@ pub async fn update_employees(db: &DbConn, employees: &Option<employees::Model>)
     } else {
         println!("Name is None");
     }
-
 
     Ok(Some(active_employees))
 }
