@@ -1,11 +1,25 @@
 use std::env;
 use std::time::Duration;
 use dotenv::dotenv;
-use sea_orm::{ActiveModelTrait, ActiveValue, ConnectOptions, Database, DbConn, DbErr, DeleteResult, EntityTrait, QueryFilter};
+use sea_orm::{ActiveModelTrait, ActiveValue, ConnectOptions, Database, DatabaseConnection, DbConn, DbErr, DeleteResult, EntityTrait, QueryFilter};
 use sea_orm::ActiveValue::Set;
 use crate::database::entities::{todos, users};
 use crate::database::entities::prelude::Todos;
 use sea_orm::ColumnTrait;
+
+pub struct DbInfo {
+    db_connection:DbConn
+  }
+
+  impl DbInfo {
+    pub async fn new() -> Self {
+        let db_connection:DatabaseConnection  = establish_connection().await.expect("connection error!");
+        DbInfo {db_connection}
+    }
+    pub fn get_db_connection(&self) -> &DbConn {
+        &self.db_connection
+    }
+  }
 
 pub async  fn check_connection() -> Result<(), DbErr> {
     // DB接続のためのコネクションを生成
