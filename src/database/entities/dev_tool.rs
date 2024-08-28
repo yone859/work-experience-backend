@@ -8,90 +8,26 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     pub project_no: Option<i32>,
-    pub dev_tool_type1: Option<i32>,
+    pub dev_tool_type1: Option<String>,
     pub dev_tool_name1: Option<String>,
-    pub dev_tool_type2: Option<i32>,
+    pub dev_tool_type2: Option<String>,
     pub dev_tool_name2: Option<String>,
-    pub dev_tool_type3: Option<i32>,
+    pub dev_tool_type3: Option<String>,
     pub dev_tool_name3: Option<String>,
-    pub dev_tool_type4: Option<i32>,
+    pub dev_tool_type4: Option<String>,
     pub dev_tool_name4: Option<String>,
-    pub dev_tool_type5: Option<i32>,
+    pub dev_tool_type5: Option<String>,
     pub dev_tool_name5: Option<String>,
-    pub dev_tool_type6: Option<i32>,
+    pub dev_tool_type6: Option<String>,
     pub dev_tool_name6: Option<String>,
-    pub dev_tool_type7: Option<i32>,
+    pub dev_tool_type7: Option<String>,
     pub dev_tool_name7: Option<String>,
-    pub dev_tool_type8: Option<i32>,
+    pub dev_tool_type8: Option<String>,
     pub dev_tool_name8: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::dev_tool_mst::Entity",
-        from = "Column::DevToolType1",
-        to = "super::dev_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    DevToolMst8,
-    #[sea_orm(
-        belongs_to = "super::dev_tool_mst::Entity",
-        from = "Column::DevToolType2",
-        to = "super::dev_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    DevToolMst7,
-    #[sea_orm(
-        belongs_to = "super::dev_tool_mst::Entity",
-        from = "Column::DevToolType3",
-        to = "super::dev_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    DevToolMst6,
-    #[sea_orm(
-        belongs_to = "super::dev_tool_mst::Entity",
-        from = "Column::DevToolType4",
-        to = "super::dev_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    DevToolMst5,
-    #[sea_orm(
-        belongs_to = "super::dev_tool_mst::Entity",
-        from = "Column::DevToolType5",
-        to = "super::dev_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    DevToolMst4,
-    #[sea_orm(
-        belongs_to = "super::dev_tool_mst::Entity",
-        from = "Column::DevToolType6",
-        to = "super::dev_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    DevToolMst3,
-    #[sea_orm(
-        belongs_to = "super::dev_tool_mst::Entity",
-        from = "Column::DevToolType7",
-        to = "super::dev_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    DevToolMst2,
-    #[sea_orm(
-        belongs_to = "super::dev_tool_mst::Entity",
-        from = "Column::DevToolType8",
-        to = "super::dev_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    DevToolMst1,
     #[sea_orm(
         belongs_to = "super::work_experience::Entity",
         from = "Column::ProjectNo",
