@@ -8,90 +8,26 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     pub project_no: Option<i32>,
-    pub pjt_support_tool_type1: Option<i32>,
+    pub pjt_support_tool_type1: Option<String>,
     pub pjt_support_tool_name1: Option<String>,
-    pub pjt_support_tool_type2: Option<i32>,
+    pub pjt_support_tool_type2: Option<String>,
     pub pjt_support_tool_name2: Option<String>,
-    pub pjt_support_tool_type3: Option<i32>,
+    pub pjt_support_tool_type3: Option<String>,
     pub pjt_support_tool_name3: Option<String>,
-    pub pjt_support_tool_type4: Option<i32>,
+    pub pjt_support_tool_type4: Option<String>,
     pub pjt_support_tool_name4: Option<String>,
-    pub pjt_support_tool_type5: Option<i32>,
+    pub pjt_support_tool_type5: Option<String>,
     pub pjt_support_tool_name5: Option<String>,
-    pub pjt_support_tool_type6: Option<i32>,
+    pub pjt_support_tool_type6: Option<String>,
     pub pjt_support_tool_name6: Option<String>,
-    pub pjt_support_tool_type7: Option<i32>,
+    pub pjt_support_tool_type7: Option<String>,
     pub pjt_support_tool_name7: Option<String>,
-    pub pjt_support_tool_type8: Option<i32>,
+    pub pjt_support_tool_type8: Option<String>,
     pub pjt_support_tool_name8: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(
-        belongs_to = "super::pjt_support_tool_mst::Entity",
-        from = "Column::PjtSupportToolType1",
-        to = "super::pjt_support_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    PjtSupportToolMst8,
-    #[sea_orm(
-        belongs_to = "super::pjt_support_tool_mst::Entity",
-        from = "Column::PjtSupportToolType2",
-        to = "super::pjt_support_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    PjtSupportToolMst7,
-    #[sea_orm(
-        belongs_to = "super::pjt_support_tool_mst::Entity",
-        from = "Column::PjtSupportToolType3",
-        to = "super::pjt_support_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    PjtSupportToolMst6,
-    #[sea_orm(
-        belongs_to = "super::pjt_support_tool_mst::Entity",
-        from = "Column::PjtSupportToolType4",
-        to = "super::pjt_support_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    PjtSupportToolMst5,
-    #[sea_orm(
-        belongs_to = "super::pjt_support_tool_mst::Entity",
-        from = "Column::PjtSupportToolType5",
-        to = "super::pjt_support_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    PjtSupportToolMst4,
-    #[sea_orm(
-        belongs_to = "super::pjt_support_tool_mst::Entity",
-        from = "Column::PjtSupportToolType6",
-        to = "super::pjt_support_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    PjtSupportToolMst3,
-    #[sea_orm(
-        belongs_to = "super::pjt_support_tool_mst::Entity",
-        from = "Column::PjtSupportToolType7",
-        to = "super::pjt_support_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    PjtSupportToolMst2,
-    #[sea_orm(
-        belongs_to = "super::pjt_support_tool_mst::Entity",
-        from = "Column::PjtSupportToolType8",
-        to = "super::pjt_support_tool_mst::Column::Id",
-        on_update = "NoAction",
-        on_delete = "NoAction"
-    )]
-    PjtSupportToolMst1,
     #[sea_orm(
         belongs_to = "super::work_experience::Entity",
         from = "Column::ProjectNo",
