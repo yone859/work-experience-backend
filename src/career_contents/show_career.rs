@@ -18,25 +18,14 @@ pub async fn  show_top() -> axum::Json<serde_json::Value> {
     let select_res_work_experience:Vec<entities::work_experience::Model> = select_work_experience(&db.get_db_connection()).await.expect("database select error!");
     //devツールテーブルSELECT
     let select_res_dev_tool:Vec<entities::dev_tool::Model> = select_dev_tool(&db.get_db_connection()).await.expect("database select error!");
-    // //devツールMSTテーブルSELECT
-    // let select_res_dev_tool_mst:Vec<entities::dev_tool_mst::Model> = select_dev_tool_mst(&db.get_db_connection()).await.expect("database select error!");
-
-    //devツールマスタテーブルSELECT
-    let select_res_dev_tool_mst:Vec<entities::dev_tool_mst::Model> = select_dev_mst_tool(&db.get_db_connection()).await.expect("database select error!");
-
-    //devツールmマスタテーブルSELECT
-    pub async fn select_dev_mst_tool(db: &DbConn) -> Result<Vec<entities::dev_tool_mst::Model>, sea_orm::DbErr> {
-        dev_tool_mst::Entity::find()
-            .order_by_asc(dev_tool_mst::Column::Id)
-            .all(db)
-            .await                
-    }
-
-
+    //pjtサポートツールテーブルSELECT
+    let select_res_pjt_support_tool:Vec<entities::pjt_support_tool::Model> = select_pjt_support_tool(&db.get_db_connection()).await.expect("database select error!");
     //devツール情報加工
     let dev_tool_str :Vec<Vec<HashMap<String,String>>> = make_dev_tool_str(select_res_dev_tool).await;
+    //pjtサポートツール情報加工
+    let pjt_support_tool_str :Vec<Vec<HashMap<String,String>>> = make_pjt_support_tool(select_res_pjt_support_tool).await;
     //案件情報加工
-    let work_experience_return_data :HashMap<String, Vec<HashMap<String, String>>> = make_work_experience_str(select_res_work_experience,dev_tool_str,select_res_dev_tool_mst).await;
+    let work_experience_return_data :HashMap<String, Vec<HashMap<String, String>>> = make_work_experience_str(select_res_work_experience, dev_tool_str, pjt_support_tool_str).await;
     //資格情報を文字列に加工する
     let self_intro_return_data :HashMap<String, String> = make_self_intro_str(select_res_self_intro).await;
     //資格情報を文字列に加工する
@@ -83,17 +72,15 @@ pub async fn select_dev_tool(db: &DbConn) -> Result<Vec<entities::dev_tool::Mode
         .await                
 }
 
+//pjtサポートツールテーブルSELECT
+pub async fn select_pjt_support_tool(db: &DbConn) -> Result<Vec<entities::pjt_support_tool::Model>, sea_orm::DbErr> {
+    pjt_support_tool::Entity::find()
+        .filter(pjt_support_tool::Column::ProjectNo.between(1, 2))
+        .all(db)
+        .await                
+}
 
-
-// //devツールMSTテーブルSELECT
-// pub async fn select_dev_tool_mst(db: &DbConn) -> Result<Vec<entities::dev_tool_mst::Model>, sea_orm::DbErr> {
-//     let dev_tool_mst:Vec<entities::dev_tool_mst::Model> = 
-//     dev_tool_mst::Entity::find()
-//         .all(db)
-//         .await.expect("database select error!");
-//         Ok(dev_tool_mst)
-// }
-
+//devツール情報加工
 pub async fn make_dev_tool_str(select_res_dev_tool:Vec<entities::dev_tool::Model>)->Vec<Vec<HashMap<String,String>>>{
     let mut dev_tool_records: Vec<Vec<HashMap<String,String>>> = Vec::new();
 
@@ -140,8 +127,55 @@ pub async fn make_dev_tool_str(select_res_dev_tool:Vec<entities::dev_tool::Model
     dev_tool_records
 }
 
+//pjtサポートツール情報加工
+pub async fn make_pjt_support_tool(select_res_pjt_support_tool:Vec<entities::pjt_support_tool::Model>)->Vec<Vec<HashMap<String,String>>>{
+    let mut pjt_support_tool_records: Vec<Vec<HashMap<String,String>>> = Vec::new();
+
+    for pjt_support_tool_record in &select_res_pjt_support_tool{
+        let mut sss:Vec<HashMap<String,String>> = Vec::new();
+        
+        let mut pjt_support_tool_str:HashMap<String,String> = HashMap::new();
+        let mut pjt_support_tool_project_no_str:HashMap<String,String> = HashMap::new();
+
+        if let Some(str) = pjt_support_tool_record.pjt_support_tool_type1.clone() {
+            if !str.is_empty() {pjt_support_tool_str.insert(str , pjt_support_tool_record.pjt_support_tool_name1.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = pjt_support_tool_record.pjt_support_tool_type2.clone() {
+            if !str.is_empty() {pjt_support_tool_str.insert(str , pjt_support_tool_record.pjt_support_tool_name2.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = pjt_support_tool_record.pjt_support_tool_type3.clone() {
+            if !str.is_empty() {pjt_support_tool_str.insert(str , pjt_support_tool_record.pjt_support_tool_name3.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = pjt_support_tool_record.pjt_support_tool_type4.clone() {
+            if !str.is_empty() {pjt_support_tool_str.insert(str , pjt_support_tool_record.pjt_support_tool_name4.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = pjt_support_tool_record.pjt_support_tool_type5.clone() {
+            if !str.is_empty() {pjt_support_tool_str.insert(str , pjt_support_tool_record.pjt_support_tool_name5.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = pjt_support_tool_record.pjt_support_tool_type6.clone() {
+            if !str.is_empty() {pjt_support_tool_str.insert(str , pjt_support_tool_record.pjt_support_tool_name6.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = pjt_support_tool_record.pjt_support_tool_type7.clone() {
+            if !str.is_empty() {pjt_support_tool_str.insert(str , pjt_support_tool_record.pjt_support_tool_name7.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = pjt_support_tool_record.pjt_support_tool_type8.clone() {
+            if !str.is_empty() {pjt_support_tool_str.insert(str , pjt_support_tool_record.pjt_support_tool_name8.as_deref().unwrap_or("").to_string());}
+        }
+    if let Some(str) = pjt_support_tool_record.project_no.clone() {
+        pjt_support_tool_project_no_str.insert(String::from("pjt_support_tool_project_no_str") , str.to_string());
+    }
+    
+    sss.push(pjt_support_tool_project_no_str);
+    sss.push(pjt_support_tool_str);
+    
+    pjt_support_tool_records.push(sss);
+    // dev_tool_records.push(pjt_support_tool_str.clone())
+    }
+    pjt_support_tool_records
+}
+
 //案件情報加工
-pub async fn make_work_experience_str(a:Vec<entities::work_experience::Model>,dev_tool_str:Vec<Vec<HashMap<String,String>>>,select_res_dev_tool_mst:Vec<entities::dev_tool_mst::Model>)->HashMap<String, Vec<HashMap<String, String>>>{
+pub async fn make_work_experience_str(a:Vec<entities::work_experience::Model>,dev_tool_str:Vec<Vec<HashMap<String,String>>>,pjt_support_tool_str:Vec<Vec<HashMap<String,String>>>)->HashMap<String, Vec<HashMap<String, String>>>{
     let mut work_experience_return_data: HashMap<String, Vec<HashMap<String, String>>>  = HashMap::new();
 
     //案件情報を文字列に加工する
@@ -169,6 +203,14 @@ pub async fn make_work_experience_str(a:Vec<entities::work_experience::Model>,de
         for inner_vec in &dev_tool_str {
             let SeqDeserializer:String = work_experience_record.project_no.clone().to_string();
             let Str:String = inner_vec.get(0).unwrap().get("dev_tool_project_no_str").unwrap().clone();
+            if SeqDeserializer == Str  {
+                record.extend(inner_vec.get(1).unwrap().clone());
+            }
+        }
+
+        for inner_vec in &pjt_support_tool_str {
+            let SeqDeserializer:String = work_experience_record.project_no.clone().to_string();
+            let Str:String = inner_vec.get(0).unwrap().get("pjt_support_tool_project_no_str").unwrap().clone();
             if SeqDeserializer == Str  {
                 record.extend(inner_vec.get(1).unwrap().clone());
             }
