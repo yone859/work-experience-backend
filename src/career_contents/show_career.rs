@@ -3,6 +3,7 @@ use crate::common::format_date::{self};
 
 use std::collections::HashMap;
 use sea_orm::{ColumnTrait, DbBackend, DbConn, DbErr, EntityTrait, IntoSimpleExpr, JoinType, QueryFilter, QueryOrder, QuerySelect, QueryTrait, RelationTrait};
+use serde::de::value::SeqDeserializer;
 
 use crate::database::db_connection::DbInfo;
 
@@ -20,10 +21,22 @@ pub async fn  show_top() -> axum::Json<serde_json::Value> {
     // //devツールMSTテーブルSELECT
     // let select_res_dev_tool_mst:Vec<entities::dev_tool_mst::Model> = select_dev_tool_mst(&db.get_db_connection()).await.expect("database select error!");
 
+    //devツールマスタテーブルSELECT
+    let select_res_dev_tool_mst:Vec<entities::dev_tool_mst::Model> = select_dev_mst_tool(&db.get_db_connection()).await.expect("database select error!");
+
+    //devツールmマスタテーブルSELECT
+    pub async fn select_dev_mst_tool(db: &DbConn) -> Result<Vec<entities::dev_tool_mst::Model>, sea_orm::DbErr> {
+        dev_tool_mst::Entity::find()
+            .order_by_asc(dev_tool_mst::Column::Id)
+            .all(db)
+            .await                
+    }
+
+
     //devツール情報加工
-    let dev_tool_str :Vec<Vec<String>> = make_dev_tool_str(select_res_dev_tool).await;
+    let dev_tool_str :Vec<Vec<HashMap<String,String>>> = make_dev_tool_str(select_res_dev_tool).await;
     //案件情報加工
-    let work_experience_return_data :HashMap<String, Vec<HashMap<String, String>>> = make_work_experience_str(select_res_work_experience,dev_tool_str).await;
+    let work_experience_return_data :HashMap<String, Vec<HashMap<String, String>>> = make_work_experience_str(select_res_work_experience,dev_tool_str,select_res_dev_tool_mst).await;
     //資格情報を文字列に加工する
     let self_intro_return_data :HashMap<String, String> = make_self_intro_str(select_res_self_intro).await;
     //資格情報を文字列に加工する
@@ -70,6 +83,8 @@ pub async fn select_dev_tool(db: &DbConn) -> Result<Vec<entities::dev_tool::Mode
         .await                
 }
 
+
+
 // //devツールMSTテーブルSELECT
 // pub async fn select_dev_tool_mst(db: &DbConn) -> Result<Vec<entities::dev_tool_mst::Model>, sea_orm::DbErr> {
 //     let dev_tool_mst:Vec<entities::dev_tool_mst::Model> = 
@@ -79,49 +94,59 @@ pub async fn select_dev_tool(db: &DbConn) -> Result<Vec<entities::dev_tool::Mode
 //         Ok(dev_tool_mst)
 // }
 
-pub async fn make_dev_tool_str(select_res_dev_tool:Vec<entities::dev_tool::Model>)->Vec<Vec<String>>{
-    let mut dev_tool_records: Vec<Vec<String>> = Vec::new();
+pub async fn make_dev_tool_str(select_res_dev_tool:Vec<entities::dev_tool::Model>)->Vec<Vec<HashMap<String,String>>>{
+    let mut dev_tool_records: Vec<Vec<HashMap<String,String>>> = Vec::new();
+
     for dev_tool_record in &select_res_dev_tool{
-        let mut dev_tool_mst_str:Vec<String> = Vec::new();
+        let mut sss:Vec<HashMap<String,String>> = Vec::new();
+        
+        let mut dev_tool_str:HashMap<String,String> = HashMap::new();
+        let mut dev_tool_project_no_str:HashMap<String,String> = HashMap::new();
 
-    if let Some(str) = dev_tool_record.dev_tool_type1.clone() {
-        if !str.is_empty() {dev_tool_mst_str.push(format!("{}：{}" ,str , &dev_tool_record.dev_tool_name1.as_deref().unwrap_or("").to_string()));}
+        if let Some(str) = dev_tool_record.dev_tool_type1.clone() {
+            if !str.is_empty() {dev_tool_str.insert(str , dev_tool_record.dev_tool_name1.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = dev_tool_record.dev_tool_type2.clone() {
+            if !str.is_empty() {dev_tool_str.insert(str , dev_tool_record.dev_tool_name2.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = dev_tool_record.dev_tool_type3.clone() {
+            if !str.is_empty() {dev_tool_str.insert(str , dev_tool_record.dev_tool_name3.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = dev_tool_record.dev_tool_type4.clone() {
+            if !str.is_empty() {dev_tool_str.insert(str , dev_tool_record.dev_tool_name4.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = dev_tool_record.dev_tool_type5.clone() {
+            if !str.is_empty() {dev_tool_str.insert(str , dev_tool_record.dev_tool_name5.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = dev_tool_record.dev_tool_type6.clone() {
+            if !str.is_empty() {dev_tool_str.insert(str , dev_tool_record.dev_tool_name6.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = dev_tool_record.dev_tool_type7.clone() {
+            if !str.is_empty() {dev_tool_str.insert(str , dev_tool_record.dev_tool_name7.as_deref().unwrap_or("").to_string());}
+        }
+        if let Some(str) = dev_tool_record.dev_tool_type8.clone() {
+            if !str.is_empty() {dev_tool_str.insert(str , dev_tool_record.dev_tool_name8.as_deref().unwrap_or("").to_string());}
+        }
+    if let Some(str) = dev_tool_record.project_no.clone() {
+        dev_tool_project_no_str.insert(String::from("dev_tool_project_no_str") , str.to_string());
     }
-    if let Some(str) = dev_tool_record.dev_tool_type2.clone() {
-        if !str.is_empty() {dev_tool_mst_str.push(format!("{}：{}" ,str , &dev_tool_record.dev_tool_name2.as_deref().unwrap_or("").to_string()));}
-    }
-    if let Some(str) = dev_tool_record.dev_tool_type3.clone() {
-        if !str.is_empty() {dev_tool_mst_str.push(format!("{}：{}" ,str , &dev_tool_record.dev_tool_name3.as_deref().unwrap_or("").to_string()));}
-    }
-    if let Some(str) = dev_tool_record.dev_tool_type4.clone() {
-        if !str.is_empty() {dev_tool_mst_str.push(format!("{}：{}" ,str , &dev_tool_record.dev_tool_name4.as_deref().unwrap_or("").to_string()));}
-    }
-    if let Some(str) = dev_tool_record.dev_tool_type5.clone() {
-        if !str.is_empty() {dev_tool_mst_str.push(format!("{}：{}" ,str , &dev_tool_record.dev_tool_name5.as_deref().unwrap_or("").to_string()));}
-    }
-    if let Some(str) = dev_tool_record.dev_tool_type6.clone() {
-        if !str.is_empty() {dev_tool_mst_str.push(format!("{}：{}" ,str , &dev_tool_record.dev_tool_name6.as_deref().unwrap_or("").to_string()));}
-    }
-    if let Some(str) = dev_tool_record.dev_tool_type7.clone() {
-        if !str.is_empty() {dev_tool_mst_str.push(format!("{}：{}" ,str , &dev_tool_record.dev_tool_name7.as_deref().unwrap_or("").to_string()));}
-    }
-    if let Some(str) = dev_tool_record.dev_tool_type8.clone() {
-        if !str.is_empty() {dev_tool_mst_str.push(format!("{}：{}" ,str , &dev_tool_record.dev_tool_name8.as_deref().unwrap_or("").to_string()));}
-    }
-
-    dev_tool_records.push(dev_tool_mst_str.clone())
+    
+    sss.push(dev_tool_project_no_str);
+    sss.push(dev_tool_str);
+    
+    dev_tool_records.push(sss);
+    // dev_tool_records.push(dev_tool_str.clone())
     }
     dev_tool_records
 }
 
 //案件情報加工
-pub async fn make_work_experience_str(a:Vec<entities::work_experience::Model>,dev_tool_str:Vec<Vec<String>>)->HashMap<String, Vec<HashMap<String, String>>>{
+pub async fn make_work_experience_str(a:Vec<entities::work_experience::Model>,dev_tool_str:Vec<Vec<HashMap<String,String>>>,select_res_dev_tool_mst:Vec<entities::dev_tool_mst::Model>)->HashMap<String, Vec<HashMap<String, String>>>{
     let mut work_experience_return_data: HashMap<String, Vec<HashMap<String, String>>>  = HashMap::new();
 
     //案件情報を文字列に加工する
     let mut work_experience_records: Vec<HashMap<String, String>> = Vec::new();
     let mut record: HashMap<String, String>  = HashMap::new();
-    let mut counter:usize=0;
 
     for work_experience_record in &a{
         //案件No
@@ -140,15 +165,14 @@ pub async fn make_work_experience_str(a:Vec<entities::work_experience::Model>,de
         record.insert(String::from("pjt_content"), work_experience_record.pjt_content.clone().unwrap());
         record.insert(String::from("work_kind"), work_experience_record.work_kind.clone().unwrap());
 
-        if let Some(inner_vec) = dev_tool_str.get(counter) {
-            let mut item_counter:usize=0;
-            for item in inner_vec {
-                record.insert(format!("{}{}" ,String::from("dev_tool_") , item_counter.to_string()), item.clone());
-                item_counter+=1;
+
+        for inner_vec in &dev_tool_str {
+            let SeqDeserializer:String = work_experience_record.project_no.clone().to_string();
+            let Str:String = inner_vec.get(0).unwrap().get("dev_tool_project_no_str").unwrap().clone();
+            if SeqDeserializer == Str  {
+                record.extend(inner_vec.get(1).unwrap().clone());
             }
         }
-        counter+=1;
-
         work_experience_records.push(record.clone());
     }
     work_experience_return_data.insert(String::from("work_experience"), work_experience_records);
