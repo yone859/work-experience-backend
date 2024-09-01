@@ -1,6 +1,6 @@
 use std::env;
 use dotenv::dotenv;
-use crate::career_contents::{edit_career, show_career};
+use crate::career_contents::{edit_career, show_career, create_career};
 
 pub async  fn running_router()  {
     let app = axum::Router::new()
@@ -9,7 +9,8 @@ pub async  fn running_router()  {
     .route("/top", axum::routing::get(show_career::show_top))
     // .route("/other", axum::routing::get(handler_other));
     .route("/", axum::routing::get(handle_index))
-    .route("/edit-work-experience", axum::routing::post(edit_career::updata_career));
+    .route("/edit-work-experience", axum::routing::post(edit_career::updata_career))
+    .route("/create-work-experience", axum::routing::post(create_career::insert_career));
 
     
 
