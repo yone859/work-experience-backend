@@ -2,6 +2,7 @@
 
 pub mod prelude;
 
+pub mod auth;
 pub mod departments;
 pub mod dev_tool;
 pub mod dev_tool_mst;
