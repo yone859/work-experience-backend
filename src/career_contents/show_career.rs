@@ -180,10 +180,15 @@ pub async fn make_work_experience_str(a:Vec<entities::work_experience::Model>,de
 
     //案件情報を文字列に加工する
     let mut work_experience_records: Vec<HashMap<String, String>> = Vec::new();
-    let mut record: HashMap<String, String>  = HashMap::new();
 
     for work_experience_record in &a{
+        let mut record: HashMap<String, String>  = HashMap::new();
+        // let mut record: HashMap<String, Box<dyn Any>>  = HashMap::new();
+
+
         //案件No
+        // record.insert(String::from("project_no"), Box::new(work_experience_record.project_no.clone().to_string()));
+
         record.insert(String::from("project_no"), work_experience_record.project_no.clone().to_string());
         record.insert(String::from("project_title"), work_experience_record.project_title.clone().unwrap());
         record.insert(String::from("member_headcount"), work_experience_record.member_headcount.clone().unwrap().to_string());
@@ -204,8 +209,12 @@ pub async fn make_work_experience_str(a:Vec<entities::work_experience::Model>,de
             let SeqDeserializer:String = work_experience_record.project_no.clone().to_string();
             let Str:String = inner_vec.get(0).unwrap().get("dev_tool_project_no_str").unwrap().clone();
             if SeqDeserializer == Str  {
+                // dev_tool_ary.push(inner_vec.get(1).unwrap().clone());
+
                 record.extend(inner_vec.get(1).unwrap().clone());
             }
+            // record.insert(String::from("dev_tool"), Box::new(dev_tool_ary));
+
         }
 
         for inner_vec in &pjt_support_tool_str {
