@@ -7,7 +7,8 @@ use serde::de::value::SeqDeserializer;
 
 use crate::database::db_connection::DbInfo;
 
-pub async fn  show_top() -> axum::Json<serde_json::Value> {
+pub async fn  show_top(axum::extract::Query(params):
+axum::extract::Query<HashMap<String, String>>) -> axum::Json<serde_json::Value> {
     let db = DbInfo::new().await;
 
     //自己紹介テーブルSELECT
@@ -15,11 +16,11 @@ pub async fn  show_top() -> axum::Json<serde_json::Value> {
     //資格テーブルSELECT
     let select_res_quali:Vec<qualification::Model> = select_qualification(&db.get_db_connection()).await.expect("database select error!");
     //案件情報SELECT
-    let select_res_work_experience:Vec<entities::work_experience::Model> = select_work_experience(&db.get_db_connection()).await.expect("database select error!");
+    let select_res_work_experience:Vec<entities::work_experience::Model> = select_work_experience(&params, &db.get_db_connection()).await.expect("database select error!");
     //devツールテーブルSELECT
-    let select_res_dev_tool:Vec<entities::dev_tool::Model> = select_dev_tool(&db.get_db_connection()).await.expect("database select error!");
+    let select_res_dev_tool:Vec<entities::dev_tool::Model> = select_dev_tool(&params, &db.get_db_connection()).await.expect("database select error!");
     //pjtサポートツールテーブルSELECT
-    let select_res_pjt_support_tool:Vec<entities::pjt_support_tool::Model> = select_pjt_support_tool(&db.get_db_connection()).await.expect("database select error!");
+    let select_res_pjt_support_tool:Vec<entities::pjt_support_tool::Model> = select_pjt_support_tool(&params, &db.get_db_connection()).await.expect("database select error!");
     //devツール情報加工
     let dev_tool_str :Vec<Vec<HashMap<String,String>>> = make_dev_tool_str(select_res_dev_tool).await;
     //pjtサポートツール情報加工
@@ -56,26 +57,32 @@ pub async fn select_qualification(db: &DbConn) -> Result<Vec<qualification::Mode
 }
 
 //案件情報SELECT
-pub async fn select_work_experience(db: &DbConn) -> Result<Vec<entities::work_experience::Model>, sea_orm::DbErr> {
+pub async fn select_work_experience(params: &HashMap<String, String>, db: &DbConn) -> Result<Vec<entities::work_experience::Model>, sea_orm::DbErr> {
+    let current: i32 = params["current_record"].parse::<i32>().unwrap();
+    let next_fetch_record: i32 = params["next_fetch_record"].parse::<i32>().unwrap();
     work_experience::Entity::find()
-        .having(work_experience::Column::ProjectNo.between(1, 2))
+        .having(work_experience::Column::ProjectNo.between(current + 1, next_fetch_record))
         .order_by_asc(work_experience::Column::ParticipateDate)
         .all(db)
         .await    
 }
 
 //devツールテーブルSELECT
-pub async fn select_dev_tool(db: &DbConn) -> Result<Vec<entities::dev_tool::Model>, sea_orm::DbErr> {
+pub async fn select_dev_tool(params: &HashMap<String, String>, db: &DbConn) -> Result<Vec<entities::dev_tool::Model>, sea_orm::DbErr> {
+    let current: i32 = params["current_record"].parse::<i32>().unwrap();
+    let next_fetch_record: i32 = params["next_fetch_record"].parse::<i32>().unwrap();
     dev_tool::Entity::find()
-        .filter(dev_tool::Column::ProjectNo.between(1, 2))
+        .filter(dev_tool::Column::ProjectNo.between(current + 1, next_fetch_record))
         .all(db)
         .await                
 }
 
 //pjtサポートツールテーブルSELECT
-pub async fn select_pjt_support_tool(db: &DbConn) -> Result<Vec<entities::pjt_support_tool::Model>, sea_orm::DbErr> {
+pub async fn select_pjt_support_tool(params: &HashMap<String, String>, db: &DbConn) -> Result<Vec<entities::pjt_support_tool::Model>, sea_orm::DbErr> {
+    let current: i32 = params["current_record"].parse::<i32>().unwrap();
+    let next_fetch_record: i32 = params["next_fetch_record"].parse::<i32>().unwrap();
     pjt_support_tool::Entity::find()
-        .filter(pjt_support_tool::Column::ProjectNo.between(1, 2))
+        .filter(pjt_support_tool::Column::ProjectNo.between(current + 1, next_fetch_record))
         .all(db)
         .await                
 }
