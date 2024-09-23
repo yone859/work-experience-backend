@@ -1,10 +1,16 @@
 use std::env;
 use axum::response::{IntoResponse, Redirect};
+use http::{header::HeaderValue};
 use dotenv::dotenv;
 use crate::career_contents::{edit_career, show_career, create_career};
 use crate::auth::{sign_up, login};
+use tower_http::cors::CorsLayer;
 
 pub async  fn running_router()  {
+  let origins = [
+    "http://localhost:3001".parse::<HeaderValue>().unwrap(),
+];
+
     let app = axum::Router::new()
     
     //トップページ情報取得
@@ -14,7 +20,11 @@ pub async  fn running_router()  {
     // .route("/other", axum::routing::get(handler_other));
     .route("/", axum::routing::get(handle_index))
     .route("/edit-work-experience", axum::routing::post(edit_career::updata_career))
-    .route("/create-work-experience", axum::routing::post(create_career::insert_career));
+    .route("/create-work-experience", axum::routing::post(create_career::insert_career))
+    .layer(
+      CorsLayer::new()
+          .allow_origin(origins)
+  );
 
     
 
