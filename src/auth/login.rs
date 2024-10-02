@@ -1,6 +1,6 @@
-use std::fmt::Write;
+use std::{io,collections::HashMap, fmt::Write};
 
-use axum::response::Redirect;
+use axum::{Json, Form, response::{IntoResponse, Response}, http::StatusCode};
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use sea_orm::{ActiveModelTrait, ActiveValue, ColumnTrait, DbConn, DbErr, EntityTrait, QueryFilter, QueryOrder, QuerySelect, Set};
 use serde::{Serialize, Deserialize};
@@ -18,7 +18,7 @@ pub struct RequestForm {
 
   impl RequestForm {
     //フォームリクエスト初期化
-    pub async fn new(req:axum::Form<RequestForm>) -> RequestForm {
+    pub async fn new(req:Form<RequestForm>) -> RequestForm {
         RequestForm {
             login_id:req.login_id.to_string(), password:req.password.to_string()
     }
@@ -29,15 +29,21 @@ pub struct RequestForm {
     }
   }
 
-pub async fn check_password(axum::Form(request_form): axum::Form<RequestForm>)-> Result<Redirect, String>{
+  #[derive(Serialize)]
+  pub struct LoginResponse {
+    // status: String,
+    message: String,
+}
+
+pub async fn check_password(Json(payload): Json<RequestForm>) -> impl IntoResponse {
+
     //リクエスト情報を格納
-    let req:RequestForm = RequestForm::new(axum::Form(request_form)).await;
+    let req:RequestForm = RequestForm::new(axum::Form(payload)).await;
     let request_data:&RequestForm=&req.get_request_form();
 
     //DB接続情報
     let db_info:DbInfo = DbInfo::new().await;
     let db:&DbConn = db_info.get_db_connection();
-
     
     let mut auth_info:Option<auth::Model> =  get_auth_info(&db, &request_data).await;
 
@@ -52,14 +58,32 @@ pub async fn check_password(axum::Form(request_form): axum::Form<RequestForm>)->
             let formatted_date = format_date::format_yyyy_mm_dd(&record.expire_date.unwrap());
             expire_date = formatted_date;
         },
-        None => println!("値なし")
+        None => {
+            let response = LoginResponse {
+                message: "Operation was successful".to_string(),
+            };
+            // return (StatusCode::UNAUTHORIZED, Json(response))
+           return (StatusCode::UNAUTHORIZED, Json(serde_json::json!(response))).into_response();
+        }
     }
     
     if salt + &generate_hash_password(&request_data.password) == hash{
-        Ok(Redirect::to("/top"))
+
+        let response = LoginResponse {
+            message: "Operation was successful".to_string(),
+        };
+        (StatusCode::OK, Json(serde_json::json!(response))).into_response()
+
+
     } else {
-        Err("error message".to_string())
+        
+        let response = LoginResponse {
+            message: "Operation was successful".to_string(),
+        };
+        (StatusCode::UNAUTHORIZED, Json(serde_json::json!(response))).into_response()
+
     }
+
 }
 
 //ログインIDを条件にauthテーブルを検索
