@@ -35,7 +35,7 @@ pub struct RequestForm {
     message: String,
 }
 
-pub async fn check_password(Json(payload): Json<RequestForm>) -> impl IntoResponse {
+pub async fn check_password(Json(payload): Json<RequestForm>) ->axum::Json<serde_json::Value> {
 
     //リクエスト情報を格納
     let req:RequestForm = RequestForm::new(axum::Form(payload)).await;
@@ -46,6 +46,7 @@ pub async fn check_password(Json(payload): Json<RequestForm>) -> impl IntoRespon
     let db:&DbConn = db_info.get_db_connection();
     
     let mut auth_info:Option<auth::Model> =  get_auth_info(&db, &request_data).await;
+    let mut return_data: HashMap<String,String> = HashMap::new();
 
     let mut salt:String = "".to_string(); 
     let mut hash:String = "".to_string(); 
@@ -59,30 +60,25 @@ pub async fn check_password(Json(payload): Json<RequestForm>) -> impl IntoRespon
             expire_date = formatted_date;
         },
         None => {
-            let response = LoginResponse {
-                message: "Operation was successful".to_string(),
-            };
-            // return (StatusCode::UNAUTHORIZED, Json(response))
-           return (StatusCode::UNAUTHORIZED, Json(serde_json::json!(response))).into_response();
+            return_data.insert(String::from("stats") , String::from("401"));
+            return_data.insert(String::from("message") , String::from("ユーザーが見つかりません。"));
         }
     }
     
     if salt + &generate_hash_password(&request_data.password) == hash{
-
-        let response = LoginResponse {
-            message: "Operation was successful".to_string(),
-        };
-        (StatusCode::OK, Json(serde_json::json!(response))).into_response()
-
+        return_data.insert(String::from("stats") , String::from("200"));
+        return_data.insert(String::from("message") , String::from("ログイン成功。"));
 
     } else {
         
-        let response = LoginResponse {
-            message: "Operation was successful".to_string(),
-        };
-        (StatusCode::UNAUTHORIZED, Json(serde_json::json!(response))).into_response()
+        return_data.insert(String::from("stats") , String::from("401"));
+        return_data.insert(String::from("message") , String::from("パスワードが正しくありません。"));
+
 
     }
+
+    let data = serde_json::json!(return_data);
+    axum::Json(data)
 
 }
 
