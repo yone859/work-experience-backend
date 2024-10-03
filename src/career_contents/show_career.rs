@@ -61,8 +61,8 @@ pub async fn select_work_experience(params: &HashMap<String, String>, db: &DbCon
     let current: i32 = params["current_record"].parse::<i32>().unwrap();
     let next_fetch_record: i32 = params["next_fetch_record"].parse::<i32>().unwrap();
     work_experience::Entity::find()
-        .having(work_experience::Column::ProjectNo.between(current + 1, next_fetch_record))
-        .order_by_asc(work_experience::Column::ParticipateDate)
+        .having(work_experience::Column::ProjectNo.between(current, next_fetch_record))
+        .order_by_desc(work_experience::Column::LeaveDate)
         .all(db)
         .await    
 }
@@ -72,7 +72,7 @@ pub async fn select_dev_tool(params: &HashMap<String, String>, db: &DbConn) -> R
     let current: i32 = params["current_record"].parse::<i32>().unwrap();
     let next_fetch_record: i32 = params["next_fetch_record"].parse::<i32>().unwrap();
     dev_tool::Entity::find()
-        .filter(dev_tool::Column::ProjectNo.between(current + 1, next_fetch_record))
+        .filter(dev_tool::Column::ProjectNo.between(current, next_fetch_record))
         .all(db)
         .await                
 }
@@ -82,7 +82,7 @@ pub async fn select_pjt_support_tool(params: &HashMap<String, String>, db: &DbCo
     let current: i32 = params["current_record"].parse::<i32>().unwrap();
     let next_fetch_record: i32 = params["next_fetch_record"].parse::<i32>().unwrap();
     pjt_support_tool::Entity::find()
-        .filter(pjt_support_tool::Column::ProjectNo.between(current + 1, next_fetch_record))
+        .filter(pjt_support_tool::Column::ProjectNo.between(current, next_fetch_record))
         .all(db)
         .await                
 }
