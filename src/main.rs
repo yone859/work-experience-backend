@@ -23,13 +23,13 @@ async fn main() {
     //サーバー起動、ルーター登録
     let _ =  running_router().await;
 
-    let db:DatabaseConnection  = establish_connection().await.expect("connection error!");
+    // let db:DatabaseConnection  = establish_connection().await.expect("connection error!");
 
-    let password = "password123";
-    let hashed_password = hash_password(password);
+    // let password = "password123";
+    // let hashed_password = hash_password(password);
     
-    println!("元のパスワード: {}", password);
-    println!("ハッシュ化されたパスワード: {}", hashed_password);
+    // println!("元のパスワード: {}", password);
+    // println!("ハッシュ化されたパスワード: {}", hashed_password);
 
 }
 
