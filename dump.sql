@@ -19,7 +19,7 @@
 -- Position to start replication or point-in-time recovery from
 --
 
--- CHANGE MASTER TO MASTER_LOG_FILE='binlog.000021', MASTER_LOG_POS=157;
+-- CHANGE MASTER TO MASTER_LOG_FILE='binlog.000022', MASTER_LOG_POS=157;
 
 --
 -- Current Database: `work_experience`
@@ -120,7 +120,7 @@ CREATE TABLE `dev_tool` (
 
 LOCK TABLES `dev_tool` WRITE;
 /*!40000 ALTER TABLE `dev_tool` DISABLE KEYS */;
-INSERT INTO `dev_tool` VALUES (1,1,'インフラ','AWS（lambda、ECS、SQS、APIgateway、CodeCommit）','DB','AWS(DynamoDB)','デプロイ','AWS （CodePipeline、CodeCommit','調査ツール','AWS（CloudWatch、Athena）','使用OS','Win10、Ubuntu',NULL,NULL,NULL,NULL,NULL,NULL),(3,2,'インフラ','AWS（S3、lambda)','DB','AWS（RDS（postgreSQL,））',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(4,3,'インフラ','Docker','フレームワーク','Nuxt.js',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(5,4,'インフラ','Docker','フレームワーク','cakePHP','DB','OracleDB',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(6,5,'デザインツール','Adobe Photoshop',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(7,6,'フレームワーク','Laravel','DB','MySQL','インフラ','Docker',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(8,7,'フレームワーク','Laravel','DB','MySQL','インフラ','Docker',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(9,8,'フレームワーク','損保会社独自制作のFW','DB','OracleDB',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dev_tool` VALUES (1,1,'インフラ','AWS（lambda、ECS、SQS、APIgateway、CodeCommit）','DB','AWS(DynamoDB)','デプロイ','AWS （CodePipeline、CodeCommit）','調査ツール','AWS（CloudWatch、Athena）','使用OS','Win10、Ubuntu',NULL,NULL,NULL,NULL,NULL,NULL),(3,2,'インフラ','AWS（S3、lambda)','DB','AWS（RDS（postgreSQL,））','使用OS','Win10、Ubuntu',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(4,3,'インフラ','Docker','フレームワーク','Nuxt.js','使用OS','Win10、Ubuntu',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(5,4,'DB','MySQL','インフラ','Docker','フレームワーク','cakePHP','使用OS','Win10、Ubuntu',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(6,5,'デザインツール','Adobe Photoshop','使用OS','Win10','','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(7,6,'フレームワーク','Laravel','DB','MySQL','インフラ','Docker',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(8,7,'フレームワーク','Laravel','DB','MySQL','インフラ','Docker','使用OS','Mac',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(9,8,'フレームワーク','損保会社独自制作のFW','DB','OracleDB','使用OS','Win10、Unix',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `dev_tool` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -254,7 +254,7 @@ CREATE TABLE `qualification` (
   `obtainment_date` date DEFAULT NULL,
   `display` smallint DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -263,7 +263,7 @@ CREATE TABLE `qualification` (
 
 LOCK TABLES `qualification` WRITE;
 /*!40000 ALTER TABLE `qualification` DISABLE KEYS */;
-INSERT INTO `qualification` VALUES (1,'基本情報技術者試験 ','2017-10-01',1),(2,'Oracle database MASTER Bronze','2018-12-01',0),(3,'Oracle Java Programmer, Silver','2017-05-01',1);
+INSERT INTO `qualification` VALUES (1,'基本情報技術者試験 ','2017-10-01',1),(2,'Oracle database MASTER Bronze','2018-12-01',1),(3,'Oracle Java Programmer, Silver','2017-05-01',1),(4,'Python 3 エンジニア認定基礎試験','2018-08-01',1);
 /*!40000 ALTER TABLE `qualification` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -287,7 +287,7 @@ CREATE TABLE `self_introduction` (
 
 LOCK TABLES `self_introduction` WRITE;
 /*!40000 ALTER TABLE `self_introduction` DISABLE KEYS */;
-INSERT INTO `self_introduction` VALUES (1,'・不明点や疑問点はまず自分で調べて解決に努め、それでもわからない場合は自己判断せずまわりに協力を仰ぎ、 　正確さを大事にしてこれまで業務に取り組んできました。 ・バックエンド・フロント・インフラなど比較的幅広く何でもできます。');
+INSERT INTO `self_introduction` VALUES (1,'・バックエンド・フロント・インフラなど比較的フルスタックに開発できます。\r\n・業務経験のないスキルでも書籍などで学習し、初めて携わるＰＪＴでそれなりに動くことができる認識でいます。\r\n\r\n・ＲｕｓｔとＮｅｘｔ.jsを使った自分の経歴を載せたWEBアプリを制作しAWSを通して公開しています。\r\n\r\n・学習した時の記録、手順の作成として技術ブログも作成しています。\r\nhttps://zenn.dev/yone5');
 /*!40000 ALTER TABLE `self_introduction` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -319,7 +319,7 @@ CREATE TABLE `work_experience` (
 
 LOCK TABLES `work_experience` WRITE;
 /*!40000 ALTER TABLE `work_experience` DISABLE KEYS */;
-INSERT INTO `work_experience` VALUES (2,1,'自動車製造会社の車載システムの開発（フルリモート）',7,'2023-08-01','2024-03-30','Java','トヨタの車載システムの保守開発プロジェクトに参画し、設計から試験、本番デプロイまで担当していました。\r\n\r\nアジャイル開発の中の一つのスクラム開発というやり方で開発を行っていました。\r\n\r\nGitリポジトリやデプロイToolなど含め、すべての開発リソースがAWSのプロジェクトで、アクセスログやエラーログの管理もAWSで行ってるプロジェクトでした。\r\n\r\n仕様調査や、稼働中システムでエラー発生の際の調査や、デプロイ時に切り戻しするかの判断など、ソースやアクセスログなどを調べて、仕様や状況を整理して報告するといった運用的なタスクも行っていました。\r\n\r\nチーム内の朝会、夕会のファシリテートも当番制だったので週１でファシリテートもしていました。','基本設計、詳細設計、製造、テスト'),(4,2,'医療研究機関のシステム新規開発（フルリモート）',3,'2023-01-01','2023-06-30','Java（Amazon Corretto）','JavaとAWS（S3、lambda、RDS）を用いたバッチの新規開発。主に詳細設計書の執筆、製造、テストを担当。\r\n　Javaソース、AWSのインフラ資材など何もないところからの完全新規での開発だったので、build.gradleの編集、例外クラスの作成など、DBドライバ接続のコーディングなども行いました。\r\n　また顧客のAWSコンソールを操作させてもらい、S3やRDS等の普段は触らない様な設定を行ったり、Lambda側のメモリを変えながら大きなデータを扱う想定をした性能試験なども行いました。','詳細設計、製造、テスト'),(5,3,'寝具会社の睡眠管理システムの開発（フルリモート）',5,'2022-06-01','2022-12-30','JavaScriot（Vue.js、TypeScript）','Nuxt.js, TypeScriptを使ったフロント開発。\r\n　前任者の交代として単体試験から参画したが、製造のシワ寄せが酷く、ひたすら不具合を修正ししていた。ブランチ開発で一日に何回もコミットするようなスタイルなプロジェクトでした。\r\n　Axiosのレスポンス処理やクッキーの実装など全般的に幅広くフロントエンド開発スキルを伸ばすことができた。\r\n　他にも、バグの調査力、対応方針の提案力も身についた。','詳細設計、製造、テスト'),(6,4,'レコード会社のファンクラブサイト保守開発（フルリモート）',4,'2021-01-01','2021-01-31','PHP','ファンクラブサイトの、バックエンドのバグ修正。\r\n　数多くの仕様追加、変更の設計～テストの工程を担当していた。','詳細設計、製造、テスト'),(7,5,'保険代理店のLPサイト開発（フルリモート）',2,'2020-12-01','2021-06-30','HTML, CSS, JavaScriot','主に保険商品のLP制作。Psdファイルを元にピクセル単位でLPの作成を担当しました。\r\n　デザイナーとマンツーマン形式で作っていたのでCSSのコーディング作法や実践レベルのスキル向上に繋がった。','製造、テスト'),(8,6,'工業資材販売ECサイトの保守開発',3,'2020-04-01','2020-11-01','PHP','・ECサイトの開発\r\n※新型コロナの影響でブランク期間あり','製造、テスト'),(9,7,'墓所探しサイトの保守運用',4,'2019-08-01','2020-03-01','PHP','Laravelでバックエンド開発を担当。\r\n　他にもインフラ設計（SFTPサーバーの接続環境の構築）なども担当。','製造、テスト'),(10,8,'損保会社の業務システム保守開発',6,'2016-07-01','2019-05-30','Java','新卒入社した年の7月から現場に配属され、製造からテストまで担当。\r\n\r\n・新規元号への移行による保守開発。\r\n・業務システムのサーバー移管業務では夜間に本番環境上でDBの性能比較試験なども担当。','製造、テスト');
+INSERT INTO `work_experience` VALUES (2,1,'自動車製造会社の車載システムの開発（フルリモート）',7,'2023-08-01','2024-03-30','Java','トヨタの車載システムの保守開発プロジェクトに参画し、設計から試験、本番デプロイまで担当していました。\r\n\r\nアジャイル開発の中の一つのスクラム開発というやり方でプロジェクトを進めていました。\r\n\r\nGitリポジトリやデプロイToolなど含め、すべての開発リソースがAWSを利用しているプロジェクトでした。\r\n\r\n稼働中システムでエラー発生時の原因の調査や、切り戻し対応をするかしないかの提案など、ソースコードやアクセスログなどを調べて仕様などを纏めて報告するといった運用的なタスクも行っていました。\r\n\r\nチーム内の朝会、夕会のファシリテートも当番制だったので週１の頻度でファシリテートもしていました。\r\n','基本設計、詳細設計、製造、テスト'),(4,2,'医療研究機関のシステム新規開発（フルリモート）',3,'2023-01-01','2023-06-30','Java（Amazon Corretto）','JavaとAWS（S3、lambda、RDS）を用いたエクセルの読み書きプログラムを開発し、主に詳細設計書の執筆、製造、テストを担当してました。\r\n\r\nJavaソース、AWSのインフラ資材など何もないところからの完全新規での開発だったので、ライブラリ依存ファイル（build.gradle）の編集、例外クラスの作成など、DB接続処理などのコーディングなども行いました。\r\n\r\nまたお客様先のAWSコンソールを操作させてもらい、S3やRDS等の普段は触らない様な設定を行ったり、Lambda側のメモリを変えながら大きなデータを扱う想定をした性能試験なども行いました。','詳細設計、製造、テスト'),(5,3,'寝具会社の睡眠管理システムの開発（フルリモート）',5,'2022-06-01','2022-12-30','JavaScriot（Vue.js、TypeScript）','Nuxt.js, TypeScriptを使ったフロント開発に携わりました。\r\n\r\n期限が逼迫していたこともありひたすら不具合を修正を行っていました。タスクを何十個にも分けて、一日に何回もマスターマージするようなアジャイル開発に近いスタイルで行っていたプロジェクトでした。\r\n\r\nAxiosを使った非同期処理やブラウザ上のクッキーの読み書きなど全般的に幅広くフロントエンド開発スキルを伸ばすことができました。\r\n\r\n他にも、バグの調査や対応方針の提案も頻繁に行っていたのでこのような対応スキルも養われたとも思っております。','詳細設計、製造、テスト'),(6,4,'レコード会社のファンクラブサイト保守開発（フルリモート）',4,'2021-07-01','2022-05-01','PHP','ファンクラブサイトの、バックエンドの保守開発を行っていました。\r\n\r\n多くの仕様追加、変更の設計～テストの工程を担当していました。','詳細設計、製造、テスト'),(7,5,'保険代理店のLPサイト開発（フルリモート）',2,'2020-12-01','2021-06-30','HTML, CSS, JavaScriot','保険代理店のLPサイト制作に携わっていました。\r\n\r\nPhotoshopのデザインファイル（.Psd）を元に１ピクセル単位で、かつ生のCSSを使っていたため、細かい外観のデザインが求められるPJTでした。\r\n\r\nデザイナーとマンツーマン形式で作っていたこともあり、コーディングのコツや、JavaScriptを使ったアニメーションの作り方などフロントエンド開発でも役に立つような知識が身に付きました。','製造、テスト'),(8,6,'工業資材販売ECサイトの保守開発',3,'2020-04-01','2020-11-30','PHP','ECサイトの開発\r\n※新型コロナの影響でブランク期間あり','製造、テスト'),(9,7,'墓所探しサイトの保守運用',4,'2019-08-01','2020-03-01','PHP','Laravelでバックエンド開発を担当していました。\r\n\r\n他にも、お客様の社内で利用するためのSFTPサーバーの接続環境をゼロから構築する作業なども担当していました。','製造、テスト'),(10,8,'損保会社の業務システム保守開発',6,'2016-07-01','2019-05-30','Java','新卒入社した年の7月から現場に配属され、製造からテストまで担当していました。\r\n\r\nその中でも、令和元号へ移行するための切り替え作業や、業務システムサーバーの移管プロジェクトでは夜間に本番環境にアクセスしてDBの性能比較試験などの作業も担当していました。','製造、テスト');
 /*!40000 ALTER TABLE `work_experience` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -332,4 +332,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-02 22:22:28
+-- Dump completed on 2024-10-06 20:18:01
