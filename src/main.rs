@@ -2,7 +2,6 @@ mod database;
 mod router;
 mod career_contents;
 mod common;
-mod auth;
 
 
 use crate::database::entities::{self, prelude::*, *};
@@ -23,13 +22,7 @@ async fn main() {
     //サーバー起動、ルーター登録
     let _ =  running_router().await;
 
-    // let db:DatabaseConnection  = establish_connection().await.expect("connection error!");
 
-    // let password = "password123";
-    // let hashed_password = hash_password(password);
-    
-    // println!("元のパスワード: {}", password);
-    // println!("ハッシュ化されたパスワード: {}", hashed_password);
 
 }
 
@@ -44,16 +37,4 @@ if let Some(employee) = selected.as_ref() {
 }
 
     Ok(selected)
-}
-
-// ハッシュ化関数
-fn hash_password(password: &str) -> String {
-    let mut hasher = Sha256::new();
-    hasher.update(password);
-    let result = hasher.finalize();
-    let mut hash_string = String::new();
-    for byte in result {
-        write!(&mut hash_string, "{:02x}", byte).unwrap();
-    }
-    hash_string
 }

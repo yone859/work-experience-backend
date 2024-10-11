@@ -3,7 +3,6 @@ use axum::{response::{IntoResponse, Redirect},routing};
 use http::{header::HeaderValue};
 use dotenv::dotenv;
 use crate::career_contents::{edit_career, show_career, create_career};
-use crate::auth::{sign_up, login};
 use tower_http::cors::{CorsLayer,Any};
 
 pub async  fn running_router()  {
@@ -15,8 +14,6 @@ pub async  fn running_router()  {
     let app = axum::Router::new()
     
     //トップページ情報取得
-    // .route("/sign-up", routing::post(sign_up::create_login_info))
-    // .route("/login", routing::post(login::check_password))
     .route("/top", routing::get(show_career::show_top))
     // .route("/", routing::get(handle_index))
     // .route("/edit-work-experience", routing::post(edit_career::updata_career))
