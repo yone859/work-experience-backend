@@ -1,5 +1,3 @@
 /target/*
 /99_memo/*
 Cargo.lock
-/src/00_database - コピー
-.env
