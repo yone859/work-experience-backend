@@ -8,11 +8,8 @@ use sea_orm::*;
 pub async  fn select_null_check()  {
     let db = DbInfo::new().await;
 
-    let start_id:i32 = 1;
-    let end_id:i32 = 2;
-
     let result_select:Vec<staffs::Model>
-        = select_staff(start_id, end_id, &db.get_db_con()).await.expect("database select error!");
+        = select_staff(&db.get_db_con()).await.expect("database select error!");
 
     let mut staff_list:Vec<String> = Vec::new();
     for staff in &result_select{        
@@ -27,10 +24,9 @@ pub async  fn select_null_check()  {
 }
 
 
-pub async fn select_staff(from: i32, by: i32, db: &DbConn) -> Result<Vec<staffs::Model>, DbErr> {
+pub async fn select_staff(db: &DbConn) -> Result<Vec<staffs::Model>, DbErr> {
     let selected: Vec<staffs::Model> = 
         staffs::Entity::find()
-        .having(staffs::Column::Id.between(from, by))
         .all(db)
         .await.unwrap();
 
