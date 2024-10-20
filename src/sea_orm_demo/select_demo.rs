@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::error;
 
 use crate::database::db_connection::DbInfo;
 use crate::database::entities::{self, prelude::*, *};
@@ -12,7 +13,7 @@ pub async  fn select_null_check()  {
         = select_staff(&db.get_db_con()).await.expect("database select error!");
 
     let mut staff_list:Vec<String> = Vec::new();
-    for staff in &result_select{        
+    for staff in result_select{        
         if let Some(str) = staff.remark.clone() {
             if !str.is_empty() {
                 staff_list.push(staff.staff_name.clone().unwrap());
@@ -32,3 +33,28 @@ pub async  fn select_null_check()  {
     }
 }
 
+pub async  fn select_inner_jouin()  {
+    let db = DbInfo::new().await;
+
+    let _ = select_employees_join2(&db.get_db_con()).await;
+
+    pub async fn select_employees_join2(db: &DbConn) -> Result<(), Box<dyn error::Error>> {
+            // INNER JOINクエリを実行
+        let staff_with_department:Vec<(staffs::Model, Option<departments::Model>)> = staffs::Entity::find()
+            .find_also_related(departments::Entity) // departments と関連付け
+            .all(db)
+            .await?;
+
+        // 結果を処理
+        for (staff, department) in staff_with_department {
+            if let Some(department) = department {
+                println!(
+                    "Staff ID: {}, Name: {}, Department: {}",
+                    staff.id, staff.staff_name.unwrap(), department.departments_name.unwrap()
+                );
+            }
+        }
+
+        Ok(())
+    }
+}
