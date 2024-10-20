@@ -21,16 +21,14 @@ pub async  fn select_null_check()  {
     }
 
     println!("備考欄に記載があるスタッフ：{:?}", staff_list);
+
+    pub async fn select_staff(db: &DbConn) -> Result<Vec<staffs::Model>, DbErr> {
+        let selected: Vec<staffs::Model> = 
+            staffs::Entity::find()
+            .all(db)
+            .await.unwrap();
+    
+        Ok(selected)
+    }
 }
-
-
-pub async fn select_staff(db: &DbConn) -> Result<Vec<staffs::Model>, DbErr> {
-    let selected: Vec<staffs::Model> = 
-        staffs::Entity::find()
-        .all(db)
-        .await.unwrap();
-
-    Ok(selected)
-}
-
 
