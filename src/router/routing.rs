@@ -17,6 +17,7 @@ pub async  fn running_router()  {
     //トップページ情報取得
     // .route("/sign-up", routing::post(sign_up::create_login_info))
     // .route("/login", routing::post(login::check_password))
+    .route("/get-basic-info", routing::get(show_career::get_basic_info))
     .route("/top", routing::get(show_career::show_top))
     // .route("/", routing::get(handle_index))
     // .route("/edit-work-experience", routing::post(edit_career::updata_career))
