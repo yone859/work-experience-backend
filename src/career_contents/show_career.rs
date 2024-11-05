@@ -2,27 +2,39 @@ use crate::database::entities::{self, prelude::*, *};
 use crate::common::format_date::{self};
 
 use std::collections::HashMap;
-use sea_orm::{ColumnTrait, DbBackend, DbConn, DbErr, EntityTrait, IntoSimpleExpr, JoinType, QueryFilter, QueryOrder, QuerySelect, QueryTrait, RelationTrait};
-use serde::de::value::SeqDeserializer;
+use sea_orm::{ColumnTrait, DbConn, DbErr, EntityTrait, QueryFilter, QueryOrder, QuerySelect};
 
 use crate::database::db_connection::DbInfo;
 
-pub async fn  show_top(axum::extract::Query(params):
-axum::extract::Query<HashMap<String, String>>) -> axum::Json<serde_json::Value> {
+
+pub async fn  get_basic_info() -> axum::Json<serde_json::Value> {
     let db = DbInfo::new().await;
 
     //自己紹介テーブルSELECT
     let select_res_self_intro:Option<self_introduction::Model> = select_self_introduction(&db.get_db_connection()).await.expect("database select error!");
     //資格テーブルSELECT
     let select_res_quali:Vec<qualification::Model> = select_qualification(&db.get_db_connection()).await.expect("database select error!");
-    //案件情報加工
-    let work_experience_return_data :HashMap<String, Vec<HashMap<String, String>>> = make_work_experience_str(&params).await;
+
     //資格情報を文字列に加工する
     let self_intro_return_data :HashMap<String, String> = make_self_intro_str(select_res_self_intro).await;
     //資格情報を文字列に加工する
     let quali_return_data :HashMap<String, Vec<HashMap<String, String>>> = make_quali_str(select_res_quali).await;
 
-    let return_data = (self_intro_return_data, quali_return_data, work_experience_return_data);
+
+    let return_data = (self_intro_return_data, quali_return_data);
+
+    let data = serde_json::json!(return_data);
+    axum::Json(data)
+}
+
+pub async fn  show_top(axum::extract::Query(params):
+axum::extract::Query<HashMap<String, String>>) -> axum::Json<serde_json::Value> {
+    let db = DbInfo::new().await;
+
+    //案件情報加工
+    let work_experience_return_data :HashMap<String, Vec<HashMap<String, String>>> = make_work_experience_str(&db.get_db_connection(), &params).await;
+
+    let return_data = (work_experience_return_data);
 
     let data = serde_json::json!(return_data);
     axum::Json(data)
@@ -46,14 +58,11 @@ pub async fn select_qualification(db: &DbConn) -> Result<Vec<qualification::Mode
 }
 
 //案件情報加工
-pub async fn make_work_experience_str(params: &HashMap<String, String>)->HashMap<String, Vec<HashMap<String, String>>>{
+pub async fn make_work_experience_str(db: &DbConn, params: &HashMap<String, String>)->HashMap<String, Vec<HashMap<String, String>>>{
     let mut work_experience_return_data: HashMap<String, Vec<HashMap<String, String>>>  = HashMap::new();
 
     //全案件情報が格納されるベクタ
     let mut work_experience_records: Vec<HashMap<String, String>> = Vec::new();
-
-    
-    let db = DbInfo::new().await;
 
     let current: i32 = params["current_record"].parse::<i32>().unwrap();
     let next_fetch_record: i32 = params["next_fetch_record"].parse::<i32>().unwrap();
@@ -63,7 +72,7 @@ pub async fn make_work_experience_str(params: &HashMap<String, String>)->HashMap
         .find_also_related(work_experience::Entity) 
         .having(work_experience::Column::ProjectNo.between(current, next_fetch_record))
         .order_by_desc(work_experience::Column::LeaveDate)
-        .all(db.get_db_connection())
+        .all(db)
         .await.expect("database select error!");
 
     // INNER JOINでdevsupporttool取得
@@ -71,7 +80,7 @@ pub async fn make_work_experience_str(params: &HashMap<String, String>)->HashMap
         .find_also_related(work_experience::Entity) 
         .having(work_experience::Column::ProjectNo.between(current, next_fetch_record))
         .order_by_desc(work_experience::Column::LeaveDate)
-        .all(db.get_db_connection())
+        .all(db)
         .await.expect("database select error!");
 
 
